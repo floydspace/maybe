@@ -1,15 +1,6 @@
-import type {
-    AccountCategory,
-    AccountType,
-    PrismaClient,
-    User,
-} from '@prisma/client'
+import type { AccountCategory, AccountType, PrismaClient, User } from '@prisma/client'
 import type { Logger } from 'winston'
-import {
-    AuthUtil,
-    type PurgeUserQueue,
-    type SyncUserQueue,
-} from '@maybe-finance/server/shared'
+import { AuthUtil, type PurgeUserQueue, type SyncUserQueue } from '@maybe-finance/server/shared'
 import type { ManagementClient, UnlinkAccountsParamsProvider } from 'auth0'
 import type Stripe from 'stripe'
 import type { IBalanceSyncStrategyFactory } from '../account-balance'
@@ -26,7 +17,7 @@ export type MainOnboardingUser = Pick<
     'dob' | 'household' | 'maybeGoals' | 'firstName' | 'lastName' | 'name'
 > & {
     emailVerified: boolean
-    isAppleIdentity: boolean
+    isGoogleIdentity: boolean
     onboarding: OnboardingState['main']
     accountConnections: { accounts: { id: number }[] }[]
     accounts: { id: number }[]
@@ -351,7 +342,7 @@ export class UserService implements IUserService {
                 ...user,
                 onboarding: onboardingState,
                 emailVerified: email_verified === true || email_verified === 'true',
-                isAppleIdentity: auth0User.identities?.[0].provider === 'apple',
+                isGoogleIdentity: auth0User.identities?.[0].provider === 'google-oauth2',
             },
             onboardingState.markedComplete
         )
@@ -375,7 +366,7 @@ export class UserService implements IUserService {
             .setTitle((_) => "Before we start, let's verify your email")
             .addToGroup('setup')
             .completeIf((user) => user.emailVerified)
-            .excludeIf((user) => user.isAppleIdentity) // Auth0 auto-verifies Apple identities.
+            .excludeIf((user) => user.isGoogleIdentity) // Auth0 auto-verifies Apple identities.
 
         onboarding
             .addStep('firstAccount')

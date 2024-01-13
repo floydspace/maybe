@@ -21,9 +21,9 @@ const logoutOrigins = [...trustedOrigins]
 
 switch (env.AUTH0_ENV) {
     case 'development':
-        AUTH0_DOMAIN = 'REPLACE_THIS'
+        AUTH0_DOMAIN = 'maybe.eu.auth0.com'
         AUTH0_CUSTOM_DOMAIN = AUTH0_DOMAIN
-        AUTH0_CLIENT_ID = 'REPLACE_THIS'
+        AUTH0_CLIENT_ID = 'N3mhd6Kf6TDRsxTlONpBm0OZlOldYzSX'
         // 8484 is for the local auth0-client testing
         CLIENT_BASE_URLS = [
             'http://localhost:4200',
@@ -32,8 +32,8 @@ switch (env.AUTH0_ENV) {
         ]
         CLIENT_LOGOUT_URLS = [...logoutOrigins, 'http://localhost:4200']
         SERVER_BASE_URLS = ['http://localhost:3333']
-        ADMIN_ROLE_ID = 'REPLACE_THIS'
-        BETA_TESTER_ROLE_ID = 'REPLACE_THIS'
+        ADMIN_ROLE_ID = 'rol_1sTQ8FaCHeSKvQPS'
+        // BETA_TESTER_ROLE_ID = 'rol_AE1VEwaJ6rzLvzTb'
         break
     case 'staging':
         AUTH0_DOMAIN = 'REPLACE_THIS'
@@ -68,20 +68,22 @@ module.exports = {
 
         /* If something exists in the tenant, but NOT the tenant.yaml file, the resource in the
        tenant will NOT be deleted (hence, `false`) - keeping this set to false as a safeguard */
-        AUTH0_ALLOW_DELETE: false,
+        AUTH0_ALLOW_DELETE: true,
 
         // https://auth0.com/docs/deploy/deploy-cli-tool/environment-variables-and-keyword-mappings
         AUTH0_KEYWORD_REPLACE_MAPPINGS: {
             // While the JWT is issued from login.maybe.co in production, the management API still must use the default auth0.com domain
             AUTH0_DOMAIN,
+            AUTH0_CLIENT_ID,
+            AUTH0_CLIENT_SECRET: env.AUTH0_DEPLOY_CLIENT_SECRET,
             CLIENT_BASE_URLS,
             CLIENT_LOGOUT_URLS,
             SERVER_BASE_URLS,
             SERVER_CALLBACK_URLS: SERVER_BASE_URLS.map((url) => `${url}/admin/callback`),
-            POSTMARK_SMTP_PASS: env.POSTMARK_SMTP_PASS,
+            // POSTMARK_SMTP_PASS: env.POSTMARK_SMTP_PASS,
             ADMIN_ROLE_ID: ADMIN_ROLE_ID,
             BETA_TESTER_ROLE_ID: BETA_TESTER_ROLE_ID,
-            APPLE_SIGN_IN_SECRET_KEY: env.APPLE_SIGN_IN_SECRET_KEY,
+            // APPLE_SIGN_IN_SECRET_KEY: env.APPLE_SIGN_IN_SECRET_KEY,
         },
     },
     input_file: path.join(__dirname, 'tenant.yaml'),

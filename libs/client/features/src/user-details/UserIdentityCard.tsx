@@ -37,7 +37,7 @@ export function UserIdentityCard({
     return (
         <div className="flex items-center bg-gray-800 rounded-lg p-4">
             <div className="flex items-center justify-center w-12">
-                {identity.provider === 'apple' ? (
+                {identity.provider === 'google-oauth2' ? (
                     <RiAppleFill className="w-8 h-8" />
                 ) : (
                     <RiMailLine className="w-8 h-8" />
@@ -49,7 +49,9 @@ export function UserIdentityCard({
                 <div className="flex items-center">
                     {!identity.email && (
                         <span className="text-gray-100">
-                            {identity.provider === 'apple' ? 'Apple account' : 'Email account'}
+                            {identity.provider === 'google-oauth2'
+                                ? 'Google account'
+                                : 'Email account'}
                         </span>
                     )}
                     {identity.variant === 'primary' && (

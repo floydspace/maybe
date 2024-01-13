@@ -72,13 +72,13 @@ export function UserIdentityList({ profile }: { profile: SharedType.Auth0Profile
                                 key="apple-auto-suggested"
                                 identity={{
                                     variant: 'unlinked',
-                                    provider: 'apple',
+                                    provider: 'google-oauth2',
                                 }}
                                 onLink={() =>
                                     dispatch({
                                         type: 'open',
                                         key: 'linkAuth0Accounts',
-                                        props: { secondaryProvider: 'apple' },
+                                        props: { secondaryProvider: 'google-oauth2' },
                                     })
                                 }
                             />

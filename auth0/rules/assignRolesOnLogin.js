@@ -1,45 +1,44 @@
-function assignRolesOnLogin(user, context, callback) {
+const { ManagementClient } = require('auth0');
+
+exports.onExecutePostLogin = async (event, api) => {
     // This rule does not apply to unverified users - never assign a privileged role without verification!
-    if (!user.email || !user.email_verified) {
-        return callback(null, user, context);
+    if (!event.user.email || !event.user.email_verified) {
+        return;
     }
 
-    const maybeEmailDomain = 'maybe.co';
-    const emailSplit = user.email.split('@');
-    const isMaybeEmployee = emailSplit[emailSplit.length - 1].toLowerCase() === maybeEmailDomain;
+    const maybeEmailDomain = 'ifloydrose@gmail.com';
+    // const emailSplit = event.user.email.split('@');
+    // const isMaybeEmployee = emailSplit[emailSplit.length - 1].toLowerCase() === maybeEmailDomain;
 
-    if (!isMaybeEmployee) {
-        return callback(null, user, context);
+    if (event.user.email.toLowerCase() !== maybeEmailDomain) {
+        return;
     }
-
-    // Use latest version that is allowed here - https://auth0-extensions.github.io/canirequire/#auth0
-    const ManagementClient = require('auth0@2.35.0').ManagementClient;
 
     const cli = new ManagementClient({
-        token: auth0.accessToken,
-        domain: auth0.domain,
+        domain: event.secrets.AUTH0_DOMAIN,
+        clientId: event.secrets.AUTH0_CLIENT_ID,
+        clientSecret: event.secrets.AUTH0_CLIENT_SECRET,
+        scope: 'update:users',
     });
 
-    const admins = ['REPLACE_THIS'];
+    const admins = [maybeEmailDomain];
 
     const rolesToAssign = [];
 
     // https://auth0.com/docs/rules/configuration#use-the-configuration-object
-    if (admins.includes(user.email)) {
-        rolesToAssign.push(configuration.ADMIN_ROLE_ID);
+    if (admins.includes(event.user.email)) {
+        rolesToAssign.push(event.secrets.ADMIN_ROLE_ID);
     }
 
     // https://auth0.com/docs/rules/configuration#use-the-configuration-object
-    if (isMaybeEmployee) {
-        rolesToAssign.push(configuration.BETA_TESTER_ROLE_ID);
-    }
+    // if (isMaybeEmployee) {
+    //     rolesToAssign.push(event.secrets.BETA_TESTER_ROLE_ID);
+    // }
 
     // If we make it here, we know the user has verified their email and their email is in the Maybe Finance Gmail domain
-    cli.assignRolestoUser({ id: user.user_id }, { roles: rolesToAssign }, function (err) {
-        if (err) {
-            console.log(err);
-        }
-
-        return callback(null, user, context);
-    });
-}
+    try {
+        await cli.assignRolestoUser({ id: event.user.user_id }, { roles: rolesToAssign });
+    } catch (err) {
+        console.log(err);
+    }
+};

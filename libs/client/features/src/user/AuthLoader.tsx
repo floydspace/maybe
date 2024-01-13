@@ -23,11 +23,15 @@ export function AuthLoader({ message }: { message?: string }): JSX.Element {
                         <p>
                             You are currently logged in to your{' '}
                             <span className="text-white">
-                                {currentLoginType === 'apple' ? 'Apple ' : 'Email/Password '}
+                                {currentLoginType === 'google-oauth2'
+                                    ? 'Google '
+                                    : 'Email/Password '}
                             </span>{' '}
                             account. Please login with your{' '}
                             <span className="text-white">
-                                {currentLoginType === 'apple' ? 'Email/Password ' : 'Apple '}
+                                {currentLoginType === 'google-oauth2'
+                                    ? 'Email/Password '
+                                    : 'Google '}
                                 account
                             </span>
                             , and we'll merge the data between the two (no data will be lost).

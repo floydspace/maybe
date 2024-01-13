@@ -34,12 +34,12 @@ const envSchema = z.object({
     NX_NGROK_URL: z.string().default('http://localhost:4551'),
 
     // Dev doesn't have a custom domain, so replace with the original dev URL
-    NX_AUTH0_DOMAIN: z.string().default('REPLACE_THIS'),
-    NX_AUTH0_CUSTOM_DOMAIN: z.string().default('REPLACE_THIS'),
+    NX_AUTH0_DOMAIN: z.string().default('maybe.eu.auth0.com'),
+    NX_AUTH0_CUSTOM_DOMAIN: z.string().default('maybe.eu.auth0.com'),
     NX_AUTH0_AUDIENCE: z.string().default('https://maybe-finance-api/v1'),
-    NX_AUTH0_CLIENT_ID: z.string().default('REPLACE_THIS'),
+    NX_AUTH0_CLIENT_ID: z.string().default('hPXTkhEOH3dNgt2JI1CS1PZczTO3WnVL'),
     NX_AUTH0_CLIENT_SECRET: z.string(),
-    NX_AUTH0_MGMT_CLIENT_ID: z.string().default('REPLACE_THIS'),
+    NX_AUTH0_MGMT_CLIENT_ID: z.string().default('N3mhd6Kf6TDRsxTlONpBm0OZlOldYzSX'),
     NX_AUTH0_MGMT_CLIENT_SECRET: z.string(),
 
     NX_PLAID_CLIENT_ID: z.string().default('REPLACE_THIS'),

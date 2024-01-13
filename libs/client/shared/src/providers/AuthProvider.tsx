@@ -22,8 +22,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
     const router = useRouter()
 
     const sharedConfig: Auth0ProviderOptions = {
-        domain: process.env.NEXT_PUBLIC_AUTH0_DOMAIN || 'REPLACE_THIS',
-        clientId: process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID || 'REPLACE_THIS',
+        domain: process.env.NEXT_PUBLIC_AUTH0_DOMAIN || 'maybe.eu.auth0.com',
+        clientId: process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID || 'NJluY2ojXJZsSEoM6ssYY5yWdZgn5rNi',
         onRedirectCallback: (appState) => router.replace(appState?.returnTo || '/'),
         authorizationParams: {
             audience: process.env.NEXT_PUBLIC_AUTH0_AUDIENCE || 'https://maybe-finance-api/v1',

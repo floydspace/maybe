@@ -564,10 +564,12 @@
                     class="social social-btns"
                     x-show="isView('login', 'register') && screenHint !== 'show-form-only'"
                 >
-                    <button class="btn btn-block btn-white" @click="loginWithProvider('apple')">
-                        <img src="https://assets.maybe.co/images/apple-icon.svg" width="20" />
+                    <button
+                        class="btn btn-block btn-white"
+                        @click="loginWithProvider('google-oauth2')"
+                    >
                         <span
-                            x-text="isView('login') ? 'Log in with Apple' : 'Sign up with Apple'"
+                            x-text="isView('login') ? 'Log in with Google' : 'Sign up with Google'"
                         ></span>
                     </button>
                 </div>

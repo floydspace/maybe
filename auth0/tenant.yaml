@@ -1,38 +1,49 @@
-rules:
-  - name: mfaAuth
-    script: ./rules/mfaAuth.js
-    stage: login_success
-    enabled: true
-    order: 1
-  - name: verifyUserOnPasswordReset
-    script: ./rules/verifyUserOnPasswordReset.js
-    stage: login_success
-    enabled: true
-    order: 2
+actions:
+#   - name: mfaAuth
+#     script: ./rules/mfaAuth.js
+#     stage: login_success
+#     enabled: true
+#     order: 1
+#   - name: verifyUserOnPasswordReset
+#     script: ./rules/verifyUserOnPasswordReset.js
+#     stage: login_success
+#     enabled: true
+#     order: 2
   - name: assignRolesOnLogin
-    script: ./rules/assignRolesOnLogin.js
-    stage: login_success
-    enabled: true
-    order: 3
-  - name: updateUserMetadata
-    script: ./rules/updateUserMetadata.js
-    stage: login_success
-    enabled: true
-    order: 4
+    code: ./rules/assignRolesOnLogin.js
+    deployed: true
+    supported_triggers:
+      - id: post-login
+        version: v3
+    secrets:
+      - name: "AUTH0_DOMAIN"
+        value: '##AUTH0_DOMAIN##'
+      - name: "AUTH0_CLIENT_ID"
+        value: '##AUTH0_CLIENT_ID##'
+      - name: "AUTH0_CLIENT_SECRET"
+        value: '##AUTH0_CLIENT_SECRET##'
+      - name: "ADMIN_ROLE_ID"
+        value: '##ADMIN_ROLE_ID##'
+      # - name: "BETA_TESTER_ROLE_ID"
+      #   value: '##BETA_TESTER_ROLE_ID##'
+#   - name: updateUserMetadata
+#     script: ./rules/updateUserMetadata.js
+#     stage: login_success
+#     enabled: true
+#     order: 4
   - name: enhanceIdToken
-    script: ./rules/enhanceIdToken.js
-    stage: login_success
-    enabled: true
-    order: 5
+    code: ./rules/enhanceIdToken.js
+    deployed: true
+    supported_triggers:
+      - id: post-login
+        version: v3
 
-
-rulesConfigs:
-  - key: "ADMIN_ROLE_ID"
-    value: '##ADMIN_ROLE_ID##'
-  - key: "BETA_TESTER_ROLE_ID"
-    value: '##BETA_TESTER_ROLE_ID##'
-
-hooks: []
+triggers:
+  post-login:
+    - action_name: assignRolesOnLogin
+      display_name: assignRolesOnLogin
+    - action_name: enhanceIdToken
+      display_name: enhanceIdToken
 
 pages:
   - name: guardian_multifactor
@@ -133,29 +144,29 @@ clients:
     sso_disabled: false
     token_endpoint_auth_method: client_secret_post
 
-  - name: auth0-deploy-cli-extension
-    app_type: non_interactive
-    cross_origin_auth: false
-    custom_login_page_on: true
-    grant_types:
-      - client_credentials
-    is_first_party: true
-    is_token_endpoint_ip_header_trusted: false
-    jwt_configuration:
-      alg: RS256
-      lifetime_in_seconds: 36000
-      secret_encoded: false
-    oidc_conformant: true
-    refresh_token:
-      expiration_type: non-expiring
-      leeway: 0
-      infinite_token_lifetime: true
-      infinite_idle_token_lifetime: true
-      token_lifetime: 31557600
-      idle_token_lifetime: 2592000
-      rotation_type: non-rotating
-    sso_disabled: false
-    token_endpoint_auth_method: client_secret_post
+  # - name: auth0-deploy-cli-extension
+  #   app_type: non_interactive
+  #   cross_origin_auth: false
+  #   custom_login_page_on: true
+  #   grant_types:
+  #     - client_credentials
+  #   is_first_party: true
+  #   is_token_endpoint_ip_header_trusted: false
+  #   jwt_configuration:
+  #     alg: RS256
+  #     lifetime_in_seconds: 36000
+  #     secret_encoded: false
+  #   oidc_conformant: true
+  #   refresh_token:
+  #     expiration_type: non-expiring
+  #     leeway: 0
+  #     infinite_token_lifetime: true
+  #     infinite_idle_token_lifetime: true
+  #     token_lifetime: 31557600
+  #     idle_token_lifetime: 2592000
+  #     rotation_type: non-rotating
+  #   sso_disabled: false
+  #   token_endpoint_auth_method: client_secret_post
 
   - name: server-m2m-cli
     allowed_clients: []
@@ -194,7 +205,7 @@ databases:
   - name: Username-Password-Authentication
     strategy: auth0
     enabled_clients:
-      - auth0-deploy-cli-extension
+      # - auth0-deploy-cli-extension
       - Maybe
       - Maybe Admin
     is_domain_connection: false
@@ -212,7 +223,7 @@ connections:
   - name: google-oauth2
     strategy: google-oauth2
     enabled_clients:
-      - auth0-deploy-cli-extension
+      # - auth0-deploy-cli-extension
       - Maybe
       - Maybe Admin
       - server-m2m-cli
@@ -223,24 +234,19 @@ connections:
         - email
         - profile
       profile: true
-  - name: apple
-    strategy: apple
+  - name: github
+    strategy: github
     enabled_clients:
-      - auth0-deploy-cli-extension
       - Maybe
       - Maybe Admin
       - server-m2m-cli
     is_domain_connection: false
     options:
-      client_id: co.maybe.webapp
-      app_secret: @@APPLE_SIGN_IN_SECRET_KEY@@
-      team_id: 8TQ4KDWF2S
-      kid: 47WD7B27JK
       email: true
-      name: true
+      profile: true
       scope:
         - email
-        - name
+        - profile
 
 tenant:
   enabled_locales:
@@ -262,32 +268,32 @@ tenant:
       primary: '#3bc9db'
   support_email: hello@maybe.co
 
-emailProvider:
-  name: smtp
-  credentials:
-    smtp_host: smtp.postmarkapp.com
-    smtp_port: 587
-    smtp_user: REPLACE_THIS
-    smtp_pass: '##POSTMARK_SMTP_PASS##'
-  default_from_address: account@maybe.co
-  enabled: true
+# emailProvider:
+#   name: smtp
+#   credentials:
+#     smtp_host: smtp.postmarkapp.com
+#     smtp_port: 587
+#     smtp_user: REPLACE_THIS
+#     smtp_pass: '##POSTMARK_SMTP_PASS##'
+#   default_from_address: account@maybe.co
+#   enabled: true
 
-emailTemplates:
-  - template: reset_email
-    body: ./emailTemplates/reset_email.html
-    enabled: true
-    from: reset@maybe.co
-    subject: Reset your password
-    syntax: liquid
-    urlLifetimeInSeconds: 86400
-  - template: verify_email
-    body: ./emailTemplates/verify_email.html
-    enabled: true
-    from: 'account@maybe.co'
-    resultUrl: '{{ application.callback_domain }}'
-    subject: 'Verify your email for Maybe Finance'
-    syntax: liquid
-    urlLifetimeInSeconds: 432000
+# emailTemplates:
+#   - template: reset_email
+#     body: ./emailTemplates/reset_email.html
+#     enabled: true
+#     from: reset@maybe.co
+#     subject: Reset your password
+#     syntax: liquid
+#     urlLifetimeInSeconds: 86400
+#   - template: verify_email
+#     body: ./emailTemplates/verify_email.html
+#     enabled: true
+#     from: 'account@maybe.co'
+#     resultUrl: '{{ application.callback_domain }}'
+#     subject: 'Verify your email for Maybe Finance'
+#     syntax: liquid
+#     urlLifetimeInSeconds: 432000
 
 clientGrants:
   - client_id: server-m2m-cli
@@ -352,9 +358,5 @@ prompts:
   identifier_first: false
 
 migrations: {}
-
-actions: []
-
-triggers: {}
 
 organizations: []

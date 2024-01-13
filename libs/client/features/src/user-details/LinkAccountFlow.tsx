@@ -68,14 +68,8 @@ export function LinkAccountFlow({ secondaryProvider, isOpen, onClose }: Props) {
                                     onNext={async () => {
                                         await secondaryAuth0.loginWithPopup({
                                             authorizationParams: {
-                                                connection:
-                                                    secondaryProvider === 'apple'
-                                                        ? 'apple'
-                                                        : 'Username-Password-Authentication',
-                                                screen_hint:
-                                                    secondaryProvider !== 'apple'
-                                                        ? 'show-form-only'
-                                                        : undefined,
+                                                connection: 'Username-Password-Authentication',
+                                                screen_hint: undefined,
                                                 max_age: 0,
                                                 display: 'page',
                                             },
@@ -129,20 +123,20 @@ function PromptStep({
             <h4 className="text-white mt-6 mb-2">Link accounts?</h4>
 
             <p className="mb-6 text-gray-50 text-base">
-                We found an {secondaryProvider === 'apple' ? 'Apple ' : ' '} account using the same
-                email address as this one in our system. Do you want to link it?
+                We found an {secondaryProvider === 'google-oauth2' ? 'Google ' : ' '} account using
+                the same email address as this one in our system. Do you want to link it?
             </p>
 
             <div className="flex w-full gap-4">
                 <Button className="w-2/4" variant="secondary" onClick={onCancel}>
                     Close
                 </Button>
-                {secondaryProvider === 'apple' ? (
+                {secondaryProvider === 'google-oauth2' ? (
                     <button
                         onClick={onNext}
                         className="w-2/4 flex items-center px-4 py-2 rounded text-base bg-white text-black shadow hover:bg-gray-25 focus:bg-gray-25 focus:ring-gray-600 font-medium"
                     >
-                        <RiAppleFill className="w-4 h-4 mx-2" /> Link with Apple
+                        <RiAppleFill className="w-4 h-4 mx-2" /> Link with Google
                     </button>
                 ) : (
                     <Button className="w-2/4" onClick={onNext}>

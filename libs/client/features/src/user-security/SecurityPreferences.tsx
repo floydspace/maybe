@@ -24,11 +24,11 @@ export function SecurityPreferences() {
     return socialOnlyUser ? (
         <>
             <p className="text-base text-white">
-                Your account credentials are managed by Apple. To reset your password, click the
-                button below to go to your Apple settings.
+                Your account credentials are managed by Google. To reset your password, click the
+                button below to go to your Google settings.
             </p>
             <Button className="mt-4" href="https://appleid.apple.com/">
-                Manage Apple Account
+                Manage Google Account
             </Button>
         </>
     ) : (

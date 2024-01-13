@@ -77,9 +77,9 @@ export function UserDetails() {
                                 type="text"
                             />
                         </form>
-                        {auth0ProfileQuery.data?.primaryIdentity.provider === 'apple' && (
+                        {auth0ProfileQuery.data?.primaryIdentity.provider === 'google-oauth2' && (
                             <div className="flex items-center gap-x-1 mt-2 text-gray-100">
-                                <span className="text-sm">Apple identity</span>
+                                <span className="text-sm">Google identity</span>
                                 <RiAppleFill className="w-3 h-3" />
                             </div>
                         )}
